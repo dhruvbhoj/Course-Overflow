@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>All Questions</title>
+  </head>
+  <body>
+    <h1>All Questions</h1>
+    <ul id="questionList">
+    </ul>
+
+    <script>
+      fetch("/trending-search")
+        .then((response) => response.json())
+        .then((questions) => {
+          const questionList = document.getElementById("questionList");
+
+          questions.forEach((question) => {
+            const listItem = document.createElement("li");
+            const questionLink = document.createElement("a");
+            questionLink.href = `/questionDetails.html?id=${question.q_id}`;
+            questionLink.textContent = question.title;
+            listItem.appendChild(questionLink);
+            questionList.appendChild(listItem);
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching questions:", error);
+        });
+    </script>
+  </body>
+</html>

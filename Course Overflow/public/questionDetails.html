@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Question Details</title>
+  </head>
+  <body>
+    <h1>Question Details</h1>
+    <div id="questionDetails">
+      <h2 id="questionTitle"></h2>
+      <div id="questionBody"></div>
+      <button onclick="likeQuestion()">Like Question</button>
+      <button onclick="deleteQuestion()">Delete Question</button>
+      <p id="deleteError" style="color: red; display: none">
+        Unauthorized to delete this question
+      </p>
+      <p>Asked by: <span id="questionUser"></span></p>
+      <p>User Reputation: <span id="userReputation"></span></p>
+      <h3>Answers</h3>
+      <div id="answerContainer">
+        <p id="currentAnswer"></p>
+        <button onclick="showPreviousAnswer()">Previous</button>
+        <button onclick="showNextAnswer()">Next</button>
+      </div>
+<form id="answerForm">
+  <textarea id="answerText" placeholder="Type your answer here..."></textarea>
+  <button type="submit">Submit Answer</button>
+</form>
+
+<script>
+  function submitAnswer(questionId, answerText) {
+    fetch(`/post-answer/${questionId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ answerText: answerText })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error('Error submitting answer:', error);
+    });
+  }
+
+  document.getElementById('answerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const answerText = document.getElementById('answerText').value;
+    submitAnswer(questionId, answerText);
+  });
+</script>
+
+      <h3>Comments</h3>
+      <ul id="commentList"></ul>
+    </div>
+
+    <script>
+      let currentAnswerIndex = 0;
+      let answers = [];
+
+      function fetchQuestionDetails(questionId) {
+        fetch(`/question-details?id=${questionId}`)
+          .then((response) => response.json())
+          .then((questionDetails) => {
+            const questionTitleElement =
+              document.getElementById("questionTitle");
+            const questionBodyElement = document.getElementById("questionBody");
+            const commentListElement = document.getElementById("commentList");
+            const questionUserElement = document.getElementById("questionUser");
+            const userReputationElement =
+              document.getElementById("userReputation");
+            questionTitleElement.textContent = questionDetails.question_title;
+            questionBodyElement.innerHTML = questionDetails.question_body;
+            questionUserElement.textContent = questionDetails.username;
+            userReputationElement.textContent = questionDetails.user_reputation;
+
+            answers = questionDetails.answers.split("]");
+            showAnswer(currentAnswerIndex);
+
+            const comments = questionDetails.comments.split("]");
+            comments.forEach((comment) => {
+              const commentItem = document.createElement("li");
+              commentItem.textContent = comment;
+              commentListElement.appendChild(commentItem);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching question details:", error);
+          });
+      }
+
+      function showAnswer(index) {
+        const currentAnswerElement = document.getElementById("currentAnswer");
+        if (index >= 0 && index < answers.length) {
+          currentAnswerElement.innerHTML = answers[index];
+        } else {
+          currentAnswerElement.innerHTML = "No more answers";
+        }
+      }
+
+      function deleteQuestion() {
+        fetch(`/questions/${questionId}`, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (response.ok) {
+              window.location.href = "/index.html";
+            } else if (response.status === 403) {
+              const deleteError = document.getElementById("deleteError");
+              deleteError.style.display = "block";
+            } else {
+              console.error("Failed to delete the question");
+            }
+          })
+          .catch((error) => {
+            console.error("Error deleting the question:", error);
+          });
+      }
+
+      function showNextAnswer() {
+        currentAnswerIndex++;
+        showAnswer(currentAnswerIndex);
+      }
+
+      function showPreviousAnswer() {
+        currentAnswerIndex--;
+        showAnswer(currentAnswerIndex);
+      }
+      function likeQuestion() {
+        fetch(`/like-question/${questionId}`, {
+          method: "POST",
+        })
+          .then((response) => {
+            if (response.ok) {
+              updateReputation();
+            } else {
+              console.error("Failed to like the question");
+            }
+          })
+          .catch((error) => {
+            console.error("Error liking the question:", error);
+          });
+      }
+
+      function updateReputation() {
+        fetch(`/question-details?id=${questionId}`)
+          .then((response) => response.json())
+          .then((questionDetails) => {
+            const questionReputationElement =
+              document.getElementById("questionReputation");
+            questionReputationElement.textContent =
+              questionDetails.question_reputation;
+          })
+          .catch((error) => {
+            console.error("Error updating reputation:", error);
+          });
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const questionId = urlParams.get("id");
+
+      fetchQuestionDetails(questionId);
+    </script>
+  </body>
+</html>

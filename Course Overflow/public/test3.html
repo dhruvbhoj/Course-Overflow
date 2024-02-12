@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Button Example</title>
+  </head>
+  <body>
+    <button id="fetchButton">Fetch Top Answers</button>
+    <div id="results"></div>
+
+    <script>
+      document
+        .getElementById("fetchButton")
+        .addEventListener("click", function () {
+          fetch("/top_answers")
+            .then((response) => response.json())
+            .then((data) => {
+              const resultsDiv = document.getElementById("results");
+              resultsDiv.innerHTML = "";
+
+              const resultSet = data.result;
+              const totalCount = data.totalCount;
+
+              resultsDiv.innerHTML += `<p>Total Count: ${totalCount}</p>`;
+
+              const list = document.createElement("ul");
+
+              resultSet.slice(0, -1).forEach((entry) => {
+                if (entry[0].a_body) {
+                  const listItem = document.createElement("li");
+
+                  const content = `
+                              <p>${entry[0].a_body}</p>
+                              <p>Creation Date: ${entry[0].a_creation_date}</p>
+                            `;
+
+                  listItem.innerHTML = content;
+                  list.appendChild(listItem);
+                }
+              });
+
+              resultsDiv.appendChild(list);
+
+            })
+            .catch((error) => {
+              console.error("Error fetching top answers:", error);
+              const resultsDiv = document.getElementById("results");
+              resultsDiv.innerHTML = "<p>Error fetching top answers</p>";
+            });
+        });
+    </script>
+  </body>
+</html>

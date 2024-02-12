@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tagged Questions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <h1>Questions Tagged</h1>
+    </header>
+
+    <main>
+        <div id="questionsContainer">
+        </div>
+    </main>
+
+    <footer>
+    </footer>
+
+    <script>
+        function getTagFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('tag');
+        }
+
+        function fetchQuestionsByTag(tag) {
+            fetch(`/questions-by-tag?tag=${encodeURIComponent(tag)}`)
+                .then(response => response.json())
+                .then(questions => {
+                    displayQuestions(questions);
+                })
+                .catch(error => {
+                    console.error('Error fetching questions for tag:', error);
+                });
+        }
+
+        function displayQuestions(questions) {
+        const questionsContainer = document.getElementById('questionsContainer');
+        questionsContainer.innerHTML = '';
+
+        questions.forEach(question => {
+            const questionDiv = document.createElement('div');
+            const link = document.createElement("a");
+
+            link.href = `/questionDetails.html?id=${question.q_id}`;
+
+            link.textContent = question.title;
+            questionDiv.appendChild(link);
+            questionsContainer.appendChild(questionDiv);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const tag = getTagFromURL();
+        if (tag) {
+            fetchQuestionsByTag(tag);
+        } else {
+            document.getElementById('questionsContainer').innerHTML = '<p>No tag specified.</p>';
+        }
+    });
+    </script>
+</body>
+</html>

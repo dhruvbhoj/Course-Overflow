@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Add User</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>2 Column Layout &mdash; Left Menu with Header &amp; Footer</title>
+    <style type="text/css">
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Sans-Serif;
+        line-height: 1.5em;
+      }
+
+      #header {
+        background: #ccc;
+        height: 100px;
+      }
+
+      #header h1 {
+        margin: 0;
+        padding-top: 15px;
+      }
+
+      main {
+        padding-bottom: 10010px;
+        margin-bottom: -10000px;
+        float: left;
+        width: 100%;
+      }
+
+      #nav {
+        padding-bottom: 10010px;
+        margin-bottom: -10000px;
+        float: left;
+        width: 230px;
+        margin-left: -100%;
+        background: #eee;
+      }
+
+      #footer {
+        clear: left;
+        width: 100%;
+        background: #ccc;
+        text-align: center;
+        padding: 4px 0;
+      }
+
+      #wrapper {
+        overflow: hidden;
+      }
+
+      #content {
+        margin-left: 230px;
+      }
+
+      .innertube {
+        margin: 15px;
+        margin-top: 0;
+      }
+
+      p {
+        color: #555;
+      }
+
+      nav ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      nav ul a {
+        color: darkgreen;
+        text-decoration: none;
+      }
+
+      .userTableContainer {
+        margin-top: 20px;
+      }
+
+
+      .nav-list {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        margin-right: 20px;
+      }
+
+      .nav-item {
+        margin-right: 10px;
+      }
+
+      .nav-item a {
+        text-decoration: none;
+        color: black;
+        font-size: 18px;
+        padding: 5px 10px; 
+      }
+
+      .nav-item.active a {
+        color: blue;
+        font-weight: bold;
+      }
+
+      .ask-question-container {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+
+      .ask-question-button:hover {
+        background-color: #45a049;
+      }
+
+      .ask-question-button:active {
+        background-color: #3e8e41;
+        box-shadow: 0 2px #666;
+        transform: translateY(2px);
+      }
+
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .search-area {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .search-container input[type="text"],
+      .search-container button {
+        height: 50px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .search-container input[type="text"] {
+        flex-grow: 1;
+        font-size: 1rem;
+      }
+
+      .search-container button {
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+
+
+
+      .ask-question-button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 20px;
+        font-size: 20px;
+        cursor: pointer;
+        width: 80%;
+        max-width: 600px;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .main-heading {
+        font-size: 24px;
+      }
+
+      #nav {
+        background: #333;
+        color: white;
+        width: 230px;
+      }
+
+      .innertube {
+        padding: 15px;
+      }
+
+      #topTagsList a {
+        display: block;
+        padding: 5px;
+        margin: 5px 0;
+        background-color: #f7f7f7;
+        color: #333;
+        text-decoration: none;
+        border-radius: 3px;
+      }
+
+      #topTagsList a:hover {
+        background-color: #e7e7e7;
+      }
+      h3 {
+        color: #4CAF50;
+        margin: 0 0 10px 0; 
+      }
+
+
+
+
+    </style>
+    
+    </script>
+    <script>
+      $(document).ready(function () {
+        $("#getUsersButton").click(function () {
+          $.ajax({
+            url: "/get-users",
+            type: "GET",
+            success: function (users) {
+              displayUsers(users);
+            },
+            error: function (err) {
+              console.log("Error fetching users:", err);
+            },
+          });
+        });
+
+        function displayUsers(users) {
+          let tableContent =
+            '<table border="1"><tr><th>ID</th><th>Name</th></tr>';
+          users.forEach(function (user) {
+            tableContent += "<tr>";
+            tableContent += "<td>" + user.id + "</td>";
+            tableContent += "<td>" + user.name + "</td>";
+            tableContent += "</tr>";
+          });
+          tableContent += "</table>";
+
+          $("#userTable").html(tableContent);
+        }
+      });
+    </script>
+  </head>
+
+  <body>
+    <header id="header">
+      <div class="container d-flex justify-content-between align-items-center">
+        <h1>Course Overflow</h1>
+        <div class="d-flex align-items-center">
+          <nav>
+            <ul class="nav-list d-flex align-items-center">
+              <li class="nav-item active"><a href="/index.html">Home</a></li>
+              <li class="nav-item"><a href="/test3.html">Leaderboard</a></li>
+              <li class="nav-item"><a href="/trending.html">Trending</a></li>
+              <li class="nav-item"><a href="/creative.html">Superpower</a></li>
+            </ul>
+          </nav>
+          <a href="/signup.html" class="btn btn-primary mx-2">Sign Up</a>
+          <a href="/login.html" class="btn btn-outline-primary">Login</a>
+        </div>
+      </div>
+    </header>
+    <div id="wrapper">
+      <main>
+        <div id="content">
+            <div class="innertube">
+              <div class="main-content">
+                <h2>Add User</h2>
+                <div class="search-area">
+                  <form id="userForm" action="/add-user" method="POST">
+                    <div class="mi">
+                      <label for="name" class="form-label">Name:</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="name"
+                        name="name"
+                        required
+                      />
+                    </div>
+                    <p></p>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+              </div>
+              
+              
+              
+                <script>
+                  generateText(20);
+                </script>
+              </p>
+            </div>
+          </div>
+
+
+      </main>
+
+      <div id="nav">
+        <div class="innertube">
+          <h3>Top Tags</h3>
+          <div id="topTagsList">
+          </div>
+        </div>
+      </div>
+      
+      
+    </div>
+
+    <footer id="footer">
+      <div class="innertube">
+        <p>Footer...</p>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      function fetchTopTags() {
+    fetch('/top-tags')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(tags => {
+        const topTagsList = document.getElementById('topTagsList');
+        topTagsList.innerHTML = ''; 
+
+        tags.forEach(tag => {
+          const tagLink = document.createElement('a');
+          tagLink.href = `/tagged-questions.html?tag=${encodeURIComponent(tag.t_name)}`;
+          tagLink.textContent = tag.t_name;
+          topTagsList.appendChild(tagLink);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching top tags:', error);
+      });
+  }
+      function fetchQuestionsByTag(tag) {
+        fetch(`/questions-by-tag?tag=${encodeURIComponent(tag)}`)
+          .then(response => response.json())
+          .then(questions => {
+          })
+          .catch(error => {
+                console.error('Error fetching questions for tag:', error);
+          });
+      }
+    
+      document.addEventListener('DOMContentLoaded', function() {
+        fetchTopTags();
+      });
+    </script>
+  </body>
+</html>

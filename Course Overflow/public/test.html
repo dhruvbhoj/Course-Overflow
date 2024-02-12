@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Add User</title>
+    <link
+      href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h2>Add User</h2>
+      <form id="userForm" action="/add-user" method="POST">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            name="name"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Show Users</title>
+    <link
+      href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h2>Show Users</h2>
+      <button onclick="showUsers()" class="btn btn-primary">
+        Show All Users
+      </button>
+      <div id="userList"></div>
+    </div>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function showUsers() {
+        fetch("/get-users")
+          .then((response) => response.json())
+          .then((users) => {
+            const userListDiv = document.getElementById("userList");
+            userListDiv.innerHTML = "";
+
+            users.forEach((user) => {
+              const userElement = document.createElement("p");
+              userElement.textContent = user.u_name;
+              userListDiv.appendChild(userElement);
+            });
+          })
+          .catch((error) => console.error("Error fetching users:", error));
+      }
+    </script>
+  </body>
+</html>
